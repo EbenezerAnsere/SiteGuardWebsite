@@ -10,6 +10,36 @@ cd backend && npm run db:migrate && npm run dev   # API on :4000
 cd frontend && npm run dev                        # UI on http://localhost:5173
 ```
 
+## Build and test
+
+Requires Node.js 22 or newer. From the project root:
+
+```bash
+npm run install:all   # npm ci in backend/ and frontend/
+npm run verify        # Node check → typecheck → lint → migrations check → tests → build
+```
+
+Individual steps: `npm run typecheck`, `npm run lint` (zero warnings allowed), `npm run db:check`, `npm test`, `npm run test:ci` (adds JUnit + coverage reports), `npm run build` (outputs `backend/dist` and `frontend/dist`).
+
+Tests use Vitest. The backend tests run the real scanner against local fixture websites (no internet needed); backend coverage must stay above the thresholds in `backend/vitest.config.ts`.
+
+## Continuous integration (Jenkins)
+
+The `Jenkinsfile` runs on any Linux, macOS or Windows agent:
+
+| Stage | What it does |
+| --- | --- |
+| Environment | Uses the agent's Node.js 22+; on Linux agents without it, downloads the Node.js release in the `NODE_VERSION` parameter, verifies its SHA-256 checksum and caches it in `.tools/` |
+| Install | `npm ci` for backend and frontend (in parallel) |
+| Static checks | Typechecks, lint, Drizzle migration check |
+| Test | Backend and frontend tests with JUnit and Cobertura coverage reports |
+| Build | Backend TypeScript build and frontend Vite build |
+| Dependency audit | `npm audit` of production dependencies; high/critical findings mark the build UNSTABLE |
+| Package | Archives `backend/dist`, migrations, `frontend/dist` and `build-info.txt` |
+| Results (always) | Publishes test results (build description shows the pass/fail count), coverage (chart if the Coverage plugin is installed) and the HTML reports |
+
+Required plugins: Pipeline, Git, JUnit. Optional: Coverage.
+
 ## Ownership verification
 
 A site can only be scanned after its owner proves control of it, using either:

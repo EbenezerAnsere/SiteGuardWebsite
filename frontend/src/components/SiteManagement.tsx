@@ -14,7 +14,9 @@ export function Modal({ open, onClose, title, children }: { open: boolean; onClo
   const panel = useRef<HTMLDivElement>(null);
   // Keep the latest onClose without re-running the effect (which would move focus) on every render.
   const closeRef = useRef(onClose);
-  closeRef.current = onClose;
+  useEffect(() => {
+    closeRef.current = onClose;
+  });
   useEffect(() => {
     if (!open) return;
     const previous = document.activeElement as HTMLElement | null;

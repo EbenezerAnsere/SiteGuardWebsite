@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { siteName } from "../api";
 import { useAuth } from "../auth";
@@ -120,9 +120,10 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 export function Layout() {
-  const [open, setOpen] = useState(false);
   const location = useLocation();
-  useEffect(() => setOpen(false), [location.pathname]);
+  const [openOn, setOpenOn] = useState<string | null>(null);
+  const open = openOn === location.pathname;
+  const setOpen = (value: boolean) => setOpenOn(value ? location.pathname : null);
 
   return (
     <div className="min-h-screen">

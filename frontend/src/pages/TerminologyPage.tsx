@@ -9,12 +9,16 @@ export function TerminologyPage() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<TermCategory | "all">("all");
 
-  // Arriving from a "What does this mean?" link: clear filters and scroll to the term.
-  useEffect(() => {
-    if (!target) return;
+  // Arriving from a "What does this mean?" link: clear filters so the term is visible...
+  const [seenTarget, setSeenTarget] = useState(target);
+  if (target !== seenTarget) {
+    setSeenTarget(target);
     setQuery("");
     setCategory("all");
-    requestAnimationFrame(() => document.getElementById(target)?.scrollIntoView({ behavior: "smooth", block: "center" }));
+  }
+  // ...then scroll to it once it has rendered.
+  useEffect(() => {
+    if (target) requestAnimationFrame(() => document.getElementById(target)?.scrollIntoView({ behavior: "smooth", block: "center" }));
   }, [target]);
 
   const q = query.trim().toLowerCase();

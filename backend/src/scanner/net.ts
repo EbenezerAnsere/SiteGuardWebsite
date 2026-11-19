@@ -113,12 +113,17 @@ async function readLimited(res: Response, maxBytes: number) {
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-      chunks.push(value);
-      total += value.byteLength;
-      if (total >= maxBytes) {
-        truncated = true;
+      // A single network chunk can be larger than the remaining budget: keep only what fits,
+      // so the body (and the reported size) never exceeds maxBytes.
+      const room = maxBytes - total;
+      if (value.byteLength >= room) {
+        if (room > 0) chunks.push(value.subarray(0, room));
+        total += Math.max(room, 0);
+        truncated = value.byteLength > room || !(await reader.read()).done;
         break;
       }
+      chunks.push(value);
+      total += value.byteLength;
     }
   } finally {
     await reader.cancel().catch(() => {});

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { isActive, type ScanLevel, type SiteListItem } from "../api";
 import { PLAN, PLANS, priceLabel } from "../plans";
@@ -37,7 +38,8 @@ function ActivityMeter({ label, part, whole }: { label: string; part: number; wh
 export function SiteActivity({ sites }: { sites: SiteListItem[] }) {
   const { ref, bind, node } = useTooltip();
   const n = sites.length;
-  const dayAgo = Date.now() - 24 * 3600 * 1000;
+  // Read the clock once per mount, not on every render.
+  const [dayAgo] = useState(() => Date.now() - 24 * 3600 * 1000);
   const verified = sites.filter((s) => s.verifiedAt).length;
   const tested = sites.filter((s) => s.latestCompleted).length;
   const recent = sites.filter((s) => s.latestCompleted?.finishedAt && new Date(s.latestCompleted.finishedAt).getTime() > dayAgo).length;

@@ -56,7 +56,11 @@ export function RunPanel() {
 
   async function run(site: SiteListItem, runLevel: ScanLevel = level) {
     setPending((p) => new Set(p).add(site.id));
-    setErrors(({ [site.id]: _, ...rest }) => rest);
+    setErrors((e) => {
+      const next = { ...e };
+      delete next[site.id];
+      return next;
+    });
     try {
       await api.post(`/sites/${site.id}/scans`, { level: runLevel });
     } catch (err) {
