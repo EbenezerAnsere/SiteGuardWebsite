@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1795020069424,
+      "tag": "0000_worried_shooting_star",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795074486690,
+      "tag": "0001_add_site_name",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795076947704,
+      "tag": "0002_add_scan_performance",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795085092256,
+      "tag": "0003_add_scan_levels",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795086151965,
+      "tag": "0004_add_verified_via",
+      "breakpoints": true
+    }
+  ]
+}
